@@ -19,7 +19,7 @@ def parse_args():
     args = vars(parser.parse_args())
 
     number = '2' if args['o'] in ['fern', 'lego'] else '1'
-    return 'nerf_pytorch/logs/' + args['o'] + '_test/' + number + '00000.tar'
+    return 'nerf-pytorch/logs/' + args['o'] + '_test/' + number + '00000.tar'
 
 
 """

@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-nerf_pytorch/*
+nerf-pytorch/*
 __pycache__/
 *.py[cod]
 *$py.class
