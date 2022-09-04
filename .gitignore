@@ -20,7 +20,7 @@ configs/
 *.dae
 ._.DS_Store
 .DS_Store
-history.json
+*.json
 
 # Distribution / packaging
 .Python

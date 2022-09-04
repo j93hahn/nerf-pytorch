@@ -106,7 +106,7 @@ class NeRF(nn.Module):
             alpha = self.alpha_linear(h)
 
             # scaling factor of alphas are here -
-            # alpha = alpha * 30.
+            alpha = alpha * 30.
 
             feature = self.feature_linear(h)
             h = torch.cat([feature, input_views], -1)
