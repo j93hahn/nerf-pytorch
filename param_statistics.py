@@ -27,7 +27,7 @@ def config_parser():
 def process_args(args):
     state = 'network_' + args.model + '_state_dict'
     number = '2' if args.object in ['fern', 'lego'] else '1'
-    loc = 'nerf-pytorch/logs/' + args.object + '_test/' + number + '00000.tar'
+    loc = 'nerf-pytorch/pretrained/' + args.object + '_test/' + number + '00000.tar'
     return state, loc
 
 

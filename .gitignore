@@ -1,11 +1,26 @@
 # Byte-compiled / optimized / DLL files
-nerf-pytorch/*
 __pycache__/
 *.py[cod]
 *$py.class
 
 # C extensions
 *.so
+
+# nerf-pytorch
+data/
+logs/
+pretrained/
+imgs/
+configs/
+**/.ipynb_checkpoints
+*.png
+*.mp4
+*.npy
+*.npz
+*.dae
+._.DS_Store
+.DS_Store
+history.json
 
 # Distribution / packaging
 .Python
