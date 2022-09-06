@@ -38,11 +38,15 @@ def main():
 
     # ckpt contains four keys, of which we are only interested in the two that
     # contain the model state dictionaries
+    print("Loading pretrained model now...")
     ckpt = torch.load(loc, map_location=device)
     params = ckpt[state]
+    print("Loading completed, using the [" + args.object + "," + \
+         args.model + "] model")
 
     # note: each key stores only one set of weights or one set of biases for a layer
     # it does not store all of a layer's params
+    print("\nPrinting parameter statistics now...")
     for key in params.keys():
         x = params[key]
         print(key)
