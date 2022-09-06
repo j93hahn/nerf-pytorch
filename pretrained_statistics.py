@@ -4,6 +4,10 @@ import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
+# this file generates
+#
+#
+
 def config_parser():
     parser = configargparse.ArgumentParser(
         description='Load pretrained NeRF model and retrieve parameter statistics')

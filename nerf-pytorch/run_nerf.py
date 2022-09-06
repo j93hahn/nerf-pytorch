@@ -227,6 +227,7 @@ def train():
     render_poses = torch.Tensor(render_poses).to(device)
 
     # Short circuit if only rendering out from trained model
+    breakpoint()
     if args.render_only:
         print('RENDER ONLY')
         with torch.no_grad():
@@ -334,7 +335,6 @@ def train():
                     target_s = target[select_coords[:, 0], select_coords[:, 1]]  # (N_rand, 3)
 
             #####  Core optimization loop  #####
-            breakpoint()
             rgb, disp, acc, extras = render(H, W, K, chunk=args.chunk, rays=batch_rays,
                                                     verbose=i < 10, retraw=True,
                                                     **render_kwargs_train)
@@ -347,7 +347,6 @@ def train():
             metric.put_scalars(psnr=psnr.item())
 
             if 'rgb0' in extras:
-                breakpoint()
                 img_loss0 = img2mse(extras['rgb0'], target_s)
                 loss = loss + img_loss0
                 psnr0 = mse2psnr(img_loss0)

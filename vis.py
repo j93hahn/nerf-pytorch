@@ -1,4 +1,4 @@
-from fabric.utils.event import read_lined_json
+from fabric.utils.event import read_stats
 from numpy.lib.stride_tricks import sliding_window_view
 from pathlib import Path
 
@@ -6,17 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 plt.style.use('seaborn-whitegrid')
-
-
-# adapted from fabric in order to incorporate different file names
-def read_stats(dirname, file, key):
-    if dirname is None or not (fname := Path(dirname) / file).is_file():
-        return [], []
-    stats = read_lined_json(fname)
-    stats = list(filter(lambda x: key in x, stats))
-    xs = [e['iter'] for e in stats]
-    ys = [e[key] for e in stats]
-    return xs, ys
 
 
 # taken from nerfy.utils
@@ -37,17 +26,17 @@ def make_plot(ax, xs, psnrs, label, ws=51):
     ax.legend()
 
 
-def main():
-    x1, psnr1 = read_stats('nerf-pytorch', 'no_scaled_history.json', 'psnr0')
-    x2, psnr2 = read_stats('nerf-pytorch', 'yes_scaled_history.json', 'psnr0')
+def generate_plots():
+    x1, psnr1 = read_stats('experiments/no_scale_alpha/', 'psnr')
+    x2, psnr2 = read_stats('experiments/scale_alpha', 'psnr')
     fig, axs = plt.subplots()
     plt.title("Experimenting with Different Scaling Factors on α for Vanilla NeRF MLP")
     plt.ylabel("PSNR Values")
     plt.xlabel("Training Iteration")
     make_plot(axs, x1, psnr1, "No Scaling on α")
     make_plot(axs, x2, psnr2, "α scaled by 30")
-    plt.savefig('combined.png', dpi=300)
+    plt.savefig('combinedpsnr.png', dpi=300)
 
 
 if __name__ == '__main__':
-    main()
+    generate_plots()
