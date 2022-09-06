@@ -4,9 +4,8 @@ import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-# this file generates
-#
-#
+# using the pretrained models provided by the creators of nerf-pytorch, this script
+# generates parameter statistics about each layer in the different pretrained models
 
 def config_parser():
     parser = configargparse.ArgumentParser(
