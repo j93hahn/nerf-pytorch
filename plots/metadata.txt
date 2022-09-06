@@ -1,0 +1,4 @@
+This txt file will contain metadata about all plots generated and stored here.
+
+combinedpsnr.png: scaled alpha vs no scaled alpha on lego NeRF MLP - comparing PSNR
+combinedpsnr0.png: scaled alpha vs no scaled alpha on lego NeRF MLP - comparing PSNR0
