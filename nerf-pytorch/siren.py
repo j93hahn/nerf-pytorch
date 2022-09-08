@@ -35,10 +35,10 @@ class SirenNeRF(nn.Module):
         else:
             self.output_linear = nn.Linear(W, output_ch)
 
-        self.init_weights()
+        self._init_weights()
 
     # apply weight initialization here
-    def init_weights(self):
+    def _init_weights(self):
         for i in range(len(self.pts_linears)):
             init_func = SirenNeRF.first_layer_sine_init if i == 0 else SirenNeRF.sine_init
             init_func(self.pts_linears[i])
@@ -91,67 +91,6 @@ class SirenNeRF(nn.Module):
             outputs = self.output_linear(h)
 
         return outputs
-
-
-# modeled after create_nerf()
-def create_siren_nerf(args):
-    """Instantiate NeRF's SiREN MLP backbone model.
-    """
-    embed_fn, input_ch = get_embedder(args.multires, args.i_embed)
-
-    input_ch_views = 0
-    embeddirs_fn = None
-    if args.use_viewdirs:
-        embeddirs_fn, input_ch_views = get_embedder(args.multires_views, args.i_embed)
-    output_ch = 5 if args.N_importance > 0 else 4
-    skips = [4]
-    model = SirenNeRF(D=args.netdepth, W=args.netwidth,
-                      input_ch=input_ch, output_ch=output_ch, skips=skips,
-                      input_ch_views=input_ch_views, use_viewdirs=args.use_viewdirs).to(device)
-    grad_vars = list(model.parameters())
-
-    model_fine = None
-    if args.N_importance > 0:
-        model_fine = SirenNeRF(D=args.netdepth_fine, W=args.netwidth_fine,
-                               input_ch=input_ch, output_ch=output_ch, skips=skips,
-                               input_ch_views=input_ch_views, use_viewdirs=args.use_viewdirs).to(device)
-        grad_vars += list(model_fine.parameters())
-
-    network_query_fn = lambda inputs, viewdirs, network_fn : run_network(inputs, viewdirs, network_fn,
-                                                                embed_fn=embed_fn,
-                                                                embeddirs_fn=embeddirs_fn,
-                                                                netchunk=args.netchunk)
-
-    # Create optimizer
-    optimizer = torch.optim.Adam(params=grad_vars, lr=args.lrate, betas=(0.9, 0.999))
-
-    start = 0
-    basedir = args.basedir
-    expname = args.expname
-
-    render_kwargs_train = {
-        'network_query_fn' : network_query_fn,
-        'perturb' : args.perturb,
-        'N_importance' : args.N_importance,
-        'network_fine' : model_fine,
-        'N_samples' : args.N_samples,
-        'network_fn' : model,
-        'use_viewdirs' : args.use_viewdirs,
-        'white_bkgd' : args.white_bkgd,
-        'raw_noise_std' : args.raw_noise_std,
-    }
-
-    # NDC only good for LLFF-style forward facing data
-    if args.dataset_type != 'llff' or args.no_ndc:
-        print('Not ndc!')
-        render_kwargs_train['ndc'] = False
-        render_kwargs_train['lindisp'] = args.lindisp
-
-    render_kwargs_test = {k : render_kwargs_train[k] for k in render_kwargs_train}
-    render_kwargs_test['perturb'] = False
-    render_kwargs_test['raw_noise_std'] = 0.
-
-    return render_kwargs_train, render_kwargs_test, start, grad_vars, optimizer
 
 
 def compare_models():

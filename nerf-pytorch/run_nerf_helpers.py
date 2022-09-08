@@ -104,6 +104,10 @@ class NeRF(nn.Module):
 
         if self.use_viewdirs:
             alpha = self.alpha_linear(h)
+
+            # scale alphas here for new experiment
+            alpha = alpha * 30.
+
             feature = self.feature_linear(h)
             h = torch.cat([feature, input_views], -1)
 
