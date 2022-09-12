@@ -20,6 +20,7 @@ def batchify(fn, chunk):
     return ret
 
 
+# this function positionally embeds the input points and viewing direction
 def run_network(inputs, viewdirs, fn, embed_fn, embeddirs_fn, netchunk=1024*64):
     """Prepares inputs and applies network 'fn'.
     """

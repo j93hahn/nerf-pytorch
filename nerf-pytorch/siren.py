@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from torchsummary import summary
-from run_nerf_helpers import NeRF
 
 
 # this module serves the purpose of Positional Embedding -- rather than positionally
@@ -153,7 +152,6 @@ class Siren(nn.Module):
 
 
 def compare_models():
-    # model1 = NeRF()
     model2 = Siren()
 
 
