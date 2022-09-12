@@ -95,6 +95,7 @@ class NeRF(nn.Module):
             self.output_linear = nn.Linear(W, output_ch)
 
     def forward(self, x):
+        # self.input_ch = 63, self.input_ch_views = 27, x = batch_size * 90
         input_pts, input_views = torch.split(x, [self.input_ch, self.input_ch_views], dim=-1)
         h = input_pts
         metric = get_event_storage()

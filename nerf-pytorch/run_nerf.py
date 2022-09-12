@@ -13,7 +13,7 @@ from tqdm import tqdm, trange
 import matplotlib.pyplot as plt
 
 from run_nerf_helpers import *
-from siren import Siren
+from siren import Siren, SirenEmbedding
 from parse import config_parser
 from render import *
 from fabric.utils.event import EventStorage, get_event_storage
@@ -39,18 +39,27 @@ def create_nerf(args):
         embeddirs_fn, input_ch_views = get_embedder(args.multires_views, args.i_embed)
     output_ch = 5 if args.N_importance > 0 else 4
     skips = [4]
-    model = NeRF(D=args.netdepth, W=args.netwidth,
-                 input_ch=input_ch, output_ch=output_ch, skips=skips,
-                 input_ch_views=input_ch_views, use_viewdirs=args.use_viewdirs).to(device)
+
+    # specify MLP backbone here
+    basis = NeRF if args.backbone == 'relu' else Siren
+
+    model = basis(D=args.netdepth, W=args.netwidth,
+                  input_ch=input_ch, output_ch=output_ch, skips=skips,
+                  input_ch_views=input_ch_views, use_viewdirs=args.use_viewdirs).to(device)
     grad_vars = list(model.parameters())
 
     model_fine = None
     if args.N_importance > 0:
-        model_fine = NeRF(D=args.netdepth_fine, W=args.netwidth_fine,
-                          input_ch=input_ch, output_ch=output_ch, skips=skips,
-                          input_ch_views=input_ch_views, use_viewdirs=args.use_viewdirs).to(device)
+        model_fine = basis(D=args.netdepth_fine, W=args.netwidth_fine,
+                           input_ch=input_ch, output_ch=output_ch, skips=skips,
+                           input_ch_views=input_ch_views, use_viewdirs=args.use_viewdirs).to(device)
         grad_vars += list(model_fine.parameters())
 
+    # insert SIREN positional embedding functions here
+    if args.backbone == 'siren':
+        embed_fn = SirenEmbedding(3, 63)
+        if args.use_viewdirs:
+            embeddirs_fn = SirenEmbedding(3, 27)
     network_query_fn = lambda inputs, viewdirs, network_fn : run_network(inputs, viewdirs, network_fn,
                                                                 embed_fn=embed_fn,
                                                                 embeddirs_fn=embeddirs_fn,
