@@ -6,6 +6,30 @@ from torchsummary import summary
 from run_nerf_helpers import NeRF
 
 
+# this module serves the purpose of Positional Embedding -- rather than positionally
+# embedding the inputs to the SIREN MLP, we replace it with a linear layer and run it
+# through a Sine activation function
+
+# in the case of embedding the input coordinates, we have out_features=63 and
+# for viewing directions, out_features=27
+class SirenEmbedding(nn.Module):
+    def __init__(self, in_features, out_features, bias=True, omega_0=30):
+        super().__init__()
+        self.layer = nn.Linear(in_features, out_features, bias=bias)
+        self.omega_0 = omega_0
+        SirenEmbedding._first_layer_sine_init(self.layer)
+
+    @staticmethod
+    def _first_layer_sine_init(m):
+        with torch.no_grad():
+            if hasattr(m, 'weight'):
+                num_input = m.weight.size(-1)
+                m.weight.uniform_(-1 / num_input, 1 / num_input)
+
+    def forward(self, x):
+        return torch.sin(self.omega_0 * self.layer(x))
+
+
 # this bundles the Linear layer and initialization technique together - not used!
 # sourced from https://github.com/kwea123/Coordinate-MLPs/blob/master/models.py
 class SirenLayer(nn.Module):
