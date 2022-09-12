@@ -108,4 +108,8 @@ def config_parser():
     parser.add_argument("--i_video",   type=int, default=50000,
                         help='frequency of render_poses video saving')
 
+    # specify the MLP backbone
+    parser.add_argument('--backbone', default='relu', choices=['relu', 'siren'],
+                        help="specify the backbone configuration")
+
     return parser
