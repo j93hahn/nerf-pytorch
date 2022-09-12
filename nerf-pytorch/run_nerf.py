@@ -13,7 +13,7 @@ from tqdm import tqdm, trange
 import matplotlib.pyplot as plt
 
 from run_nerf_helpers import *
-from siren import SirenNeRF
+from siren import Siren
 from parse import config_parser
 from render import *
 from fabric.utils.event import EventStorage, get_event_storage
