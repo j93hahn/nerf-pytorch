@@ -10,10 +10,10 @@ def trailing_window_view(xs, window_size):
     return view
 
 
-def make_plot(ax, xs, psnrs, label, ws=51):
+def make_plot(ax, xs, psnrs, label, ws=51, alpha=1):
     data = trailing_window_view(psnrs, ws)
     μ = data.mean(-1)
     σ = data.std(-1)
-    ax.plot(xs, μ, label=label)
+    ax.plot(xs, μ, label=label, alpha=alpha)
     ax.fill_between(xs, μ - σ, μ + σ, alpha=0.3)
     ax.legend()

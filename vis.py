@@ -10,6 +10,8 @@ plt.style.use('seaborn-whitegrid')
 def generate_scaled_alpha_plots():
     x1, psnr1 = read_stats('../exp/nerf/lego_train_no_scaled_alpha/', 'psnr')
     x2, psnr2 = read_stats('../exp/nerf/lego_train_scaled_alpha/', 'psnr')
+    x3, psnr3 = read_stats('../exp/nerf/22_0910_1507_58/', 'psnr')
+    x4, psnr4 = read_stats('../exp/nerf/22_0911_1206_52/', 'psnr')
 
     #x, psnrs = read_stats('nerf-pytorch/experiments/full_res_lego_siren_pos_emb/', 'psnr')
 
@@ -21,11 +23,13 @@ def generate_scaled_alpha_plots():
     plt.xlabel("Training Iteration")
     #make_plot(axs, x, psnrs, "SiREN NeRF")
 
-    make_plot(axs, x1, psnr1, "No Scaling on α")
-    make_plot(axs, x2, psnr2, "α scaled by 30")
+    make_plot(axs, x1, psnr3, "BatchNorm", alpha=0.7)
+    make_plot(axs, x1, psnr1, "No Scaling on α", alpha=0.7)
+    make_plot(axs, x1, psnr2, "α scaled by 30", alpha=0.7)
+    make_plot(axs, x1, psnr4, "BatchNorm and 30x scaled α", alpha=0.7)
 
 
-    plt.savefig('lego_full_res_alpha_compared.png', dpi=300)
+    plt.savefig('FINAL.png', dpi=300)
 
 
 def generate_alpha_values():
@@ -68,6 +72,6 @@ def read_activations():
 
 
 if __name__ == '__main__':
-    #generate_scaled_alpha_plots()
-    generate_alpha_values()
+    generate_scaled_alpha_plots()
+    #generate_alpha_values()
     #read_activations()

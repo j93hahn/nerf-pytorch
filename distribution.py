@@ -23,7 +23,7 @@ def read_stats(dirname):
 # the alpha values, stats[9] has feature values, stats[10] has the "9th" layer,
 # stats[11] outputs the RGB values (before sigmoid activation)
 def retrieve(rendered_pose:int, layer:Union[int, str], stat:str):
-    stats = read_stats(dirname='../exp/nerf/lego_train_scaled_alpha/test/render_pose' + str(rendered_pose))
+    stats = read_stats(dirname='../exp/nerf/22_0911_1206_52/pose_' + str(rendered_pose))
     data = []
 
     def preprocessing(layer):
@@ -54,19 +54,19 @@ def retrieve(rendered_pose:int, layer:Union[int, str], stat:str):
 def vis(data, rendered_pose):
     plt.hist(data[:, 0], bins=50, alpha=0.5, label="Means")
     plt.hist(data[:, 1], bins=50, alpha=0.5, label="Stds")
-    plt.title("Activation Distribution Layer 9 for Pretrained Lego Rendered Pose " + str(rendered_pose))
-    plt.xlabel("Values with Scaled Sigmas")
+    plt.title("'Features' Distribution for Pretrained Lego Rendered Pose " + str(rendered_pose))
+    plt.xlabel("Values")
     plt.ylabel("Count")
     plt.legend()
 
-    os.chdir('../exp/nerf/lego_train_scaled_alpha/test/render_pose' + str(rendered_pose))
+    os.chdir('../exp/nerf/22_0911_1206_52/pose_' + str(rendered_pose))
 
-    plt.savefig('activation_distrib_layer9.png', dpi=300)
+    plt.savefig('features_distrib.png', dpi=300)
 
 
 if __name__ == '__main__':
-    rendered_pose = 1
-    layer = 'layer'
+    rendered_pose = 0
+    layer = 'feature'
 
     means = retrieve(rendered_pose, layer, 'mean')
     stds = retrieve(rendered_pose, layer, 'std')
