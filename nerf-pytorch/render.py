@@ -5,6 +5,8 @@ import time
 import imageio
 from tqdm import tqdm
 
+from fabric.utils.event import get_event_storage
+
 DEBUG = False
 
 
@@ -132,25 +134,29 @@ def render_path(render_poses, hwf, K, chunk, render_kwargs, gt_imgs=None, savedi
     disps = []
 
     t = time.time()
+    metric = get_event_storage()
     for i, c2w in enumerate(tqdm(render_poses)):
-        print(i, time.time() - t)
-        t = time.time()
-        rgb, disp, acc, _ = render(H, W, K, chunk=chunk, c2w=c2w[:3,:4], **render_kwargs)
-        rgbs.append(rgb.cpu().numpy())
-        disps.append(disp.cpu().numpy())
-        if i==0:
-            print(rgb.shape, disp.shape)
+        with EventStorage('pose'):
+            print(i, time.time() - t)
+            t = time.time()
+            rgb, disp, acc, _ = render(H, W, K, chunk=chunk, c2w=c2w[:3,:4], **render_kwargs)
+            rgbs.append(rgb.cpu().numpy())
+            disps.append(disp.cpu().numpy())
+            if i==0:
+                print(rgb.shape, disp.shape)
 
-        """
-        if gt_imgs is not None and render_factor==0:
-            p = -10. * np.log10(np.mean(np.square(rgb.cpu().numpy() - gt_imgs[i])))
-            print(p)
-        """
+            """
+            if gt_imgs is not None and render_factor==0:
+                p = -10. * np.log10(np.mean(np.square(rgb.cpu().numpy() - gt_imgs[i])))
+                print(p)
+            """
 
-        if savedir is not None:
-            rgb8 = to8b(rgbs[-1])
-            filename = os.path.join(savedir, '{:03d}.png'.format(i))
-            imageio.imwrite(filename, rgb8)
+            if savedir is not None:
+                rgb8 = to8b(rgbs[-1])
+                filename = os.path.join(savedir, '{:03d}.png'.format(i))
+                imageio.imwrite(filename, rgb8)
+
+        metric.step()
 
 
     rgbs = np.stack(rgbs, 0)

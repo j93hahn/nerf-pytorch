@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+from fabric.utils.event import EventStorage, get_event_storage
 
 
 # Misc
@@ -96,26 +97,49 @@ class NeRF(nn.Module):
     def forward(self, x):
         input_pts, input_views = torch.split(x, [self.input_ch, self.input_ch_views], dim=-1)
         h = input_pts
+        metric = get_event_storage()
+
         for i, l in enumerate(self.pts_linears):
             h = self.pts_linears[i](h)
             h = F.relu(h)
+
+            # retrieve activation distributions for layers 1-8 of the MLP
+            metric.put_scalars(layer = i, mean = h.mean().item(), std = h.std().item())
+            metric.step()
+
             if i in self.skips:
                 h = torch.cat([input_pts, h], -1)
 
         if self.use_viewdirs:
             alpha = self.alpha_linear(h)
+            alpha = alpha / 30. # alter alpha/scene scaling here
 
-            # scale alphas here for new experiment
-            alpha = alpha * 30.
+            # retrieve sigma distributions here
+            metric.put_scalars(alpha = 1, mean = alpha.mean().item(), std = alpha.std().item())
+            metric.step()
 
             feature = self.feature_linear(h)
+
+            # retrieve distribution of values passed through the feature layer
+            metric.put_scalars(feature = 1, mean = feature.mean().item(), std = feature.std().item())
+            metric.step()
+
             h = torch.cat([feature, input_views], -1)
 
             for i, l in enumerate(self.views_linears):
                 h = self.views_linears[i](h)
                 h = F.relu(h)
 
+                # retrieve activation distributions after layer 9
+                metric.put_scalars(layer = 8, mean = h.mean().item(), std = h.std().item())
+                metric.step()
+
             rgb = self.rgb_linear(h)
+
+            # retrieve RGB distributions here
+            metric.put_scalars(rgb = 1, mean = rgb.mean().item(), std = rgb.std().item())
+            metric.step()
+
             outputs = torch.cat([rgb, alpha], -1)
         else:
             outputs = self.output_linear(h)
