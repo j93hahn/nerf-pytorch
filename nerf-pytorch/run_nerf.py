@@ -57,6 +57,7 @@ def create_nerf(args):
 
     # insert SIREN positional embedding functions here
     if args.backbone == 'siren':
+        breakpoint()
         embed_fn = SirenEmbedding(3, 63)
         if args.use_viewdirs:
             embeddirs_fn = SirenEmbedding(3, 27)
@@ -369,7 +370,7 @@ def train():
 
         loss.backward()
         optimizer.step()
-
+        breakpoint()
         # NOTE: IMPORTANT!
         ###   update learning rate   ###
         decay_rate = 0.1

@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from torchsummary import summary
+from torchviz import make_dot
 
 
 # this module serves the purpose of Positional Embedding -- rather than positionally
@@ -126,6 +127,7 @@ class Siren(nn.Module):
 
     # forward pass identical to NeRF -- replace ReLU activation with Sine
     def forward(self, x):
+        breakpoint()
         input_pts, input_views = torch.split(x, [self.input_ch, self.input_ch_views], dim=-1)
         h = input_pts
         for i, l in enumerate(self.pts_linears):
@@ -148,6 +150,7 @@ class Siren(nn.Module):
         else:
             outputs = self.output_linear(h)
 
+        #make_dot(outputs).render("attached", format="png")
         return outputs
 
 
