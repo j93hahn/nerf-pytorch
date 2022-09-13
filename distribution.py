@@ -24,7 +24,7 @@ def read_stats(dirname):
 # the alpha values, stats[9] has feature values, stats[10] has the "9th" layer,
 # stats[11] outputs the RGB values (before sigmoid activation)
 def retrieve(pose:int, layer:Union[int, str], stat:str):
-    stats = read_stats(dirname='./')
+    stats = read_stats(dirname='./pose_' + str(pose))
     data = []
 
     def preprocessing(layer):

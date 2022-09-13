@@ -13,6 +13,7 @@ def generate_scaled_alpha_plots():
     x3, psnr3 = read_stats('../exp/nerf/22_0910_1507_58/', 'psnr')
     x4, psnr4 = read_stats('../exp/nerf/22_0911_1206_52/', 'psnr')
     x5, psnr5 = read_stats('../exp/nerf/22_0912_1109_15/', 'psnr')
+    x6, psnr6 = read_stats('../exp/nerf/siren/', 'psnr')
 
     #x, psnrs = read_stats('nerf-pytorch/experiments/full_res_lego_siren_pos_emb/', 'psnr')
 
@@ -29,6 +30,7 @@ def generate_scaled_alpha_plots():
     make_plot(axs, x1, psnr2, "α scaled by 30", alpha=0.7)
     #make_plot(axs, x1, psnr4, "BatchNorm and 30x scaled α", alpha=0.7)
     make_plot(axs, x1, psnr5, "α divided by 30", alpha=0.7)
+    make_plot(axs, x1, psnr6, "SIREN MLP Backbone", alpha=0.7)
 
 
     plt.savefig('scaling_sigmas.png', dpi=300)
