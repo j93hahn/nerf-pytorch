@@ -12,6 +12,7 @@ def generate_scaled_alpha_plots():
     x2, psnr2 = read_stats('../exp/nerf/lego_train_scaled_alpha/', 'psnr')
     x3, psnr3 = read_stats('../exp/nerf/22_0910_1507_58/', 'psnr')
     x4, psnr4 = read_stats('../exp/nerf/22_0911_1206_52/', 'psnr')
+    x5, psnr5 = read_stats('../exp/nerf/22_0912_1109_15/', 'psnr')
 
     #x, psnrs = read_stats('nerf-pytorch/experiments/full_res_lego_siren_pos_emb/', 'psnr')
 
@@ -23,13 +24,14 @@ def generate_scaled_alpha_plots():
     plt.xlabel("Training Iteration")
     #make_plot(axs, x, psnrs, "SiREN NeRF")
 
-    make_plot(axs, x1, psnr3, "BatchNorm", alpha=0.7)
+    #make_plot(axs, x1, psnr3, "BatchNorm", alpha=0.7)
     make_plot(axs, x1, psnr1, "No Scaling on α", alpha=0.7)
     make_plot(axs, x1, psnr2, "α scaled by 30", alpha=0.7)
-    make_plot(axs, x1, psnr4, "BatchNorm and 30x scaled α", alpha=0.7)
+    #make_plot(axs, x1, psnr4, "BatchNorm and 30x scaled α", alpha=0.7)
+    make_plot(axs, x1, psnr5, "α divided by 30", alpha=0.7)
 
 
-    plt.savefig('FINAL.png', dpi=300)
+    plt.savefig('scaling_sigmas.png', dpi=300)
 
 
 def generate_alpha_values():
